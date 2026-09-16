@@ -1,0 +1,4289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Red Archive</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* =========================================================
+   BASE
+   ========================================================= */
+
+html {
+    background: #d6d2c4;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background:
+        linear-gradient(
+            rgba(255,255,255,0.12),
+            rgba(255,255,255,0.12)
+        ),
+        #d6d2c4;
+    color: #222;
+    font-family: Arial, Tahoma, Helvetica, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.page {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 8px 10px 25px;
+    box-sizing: border-box;
+    flex: 1;
+}
+
+.footer {
+    width: 100%;
+    margin-top: auto;
+    background: #bdb9ad;
+    border-top: 1px solid #888;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 10px;
+    color: #555;
+}
+
+a {
+    color: #0000cc;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a:visited {
+    color: #551a8b;
+}
+
+a:hover {
+    color: #990000;
+}
+
+
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
+
+.header {
+    width: 100%;
+    background: #790000;
+    color: #fff;
+    border-bottom: 2px solid #3b0000;
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 7px 10px 6px;
+    box-sizing: border-box;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.logo-area {
+    min-width: 0;
+}
+
+.header h1 {
+    margin: 0;
+    padding: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 28px;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    color: #fff;
+}
+
+.header p {
+    margin: 3px 0 0;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 11px;
+    color: #e8d8d8;
+}
+
+.user-status {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 11px;
+    color: #f4eaea;
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.nav {
+    width: 100%;
+    background: #b9b5a9;
+    border-bottom: 1px solid #777;
+    box-sizing: border-box;
+}
+
+.nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4px 10px;
+    box-sizing: border-box;
+}
+
+.nav a {
+    display: inline-block;
+    color: #000066;
+    text-decoration: underline;
+    margin-right: 13px;
+    font-size: 12px;
+}
+
+.nav a:visited {
+    color: #000066;
+}
+
+.nav a:hover {
+    color: #990000;
+}
+
+.nav-separator {
+    color: #666;
+    margin-right: 13px;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 8px 10px 25px;
+    box-sizing: border-box;
+}
+
+.content {
+    min-height: 450px;
+}
+
+.message-area {
+    margin-bottom: 7px;
+}
+
+
+/* =========================================================
+   OLD WEB PANELS
+   ========================================================= */
+
+.section {
+    margin-bottom: 10px;
+}
+
+.section-title {
+    background: #c8c4b8;
+    border: 1px solid #999;
+    border-bottom: 1px solid #777;
+    padding: 4px 7px;
+    color: #650000;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.section-body {
+    background: #eceae3;
+    border: 1px solid #999;
+    border-top: 0;
+    padding: 8px;
+}
+
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+.welcome-title {
+    margin: 0 0 5px;
+    color: #790000;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+.welcome-subtitle {
+    font-size: 12px;
+    color: #555;
+}
+
+.notice,
+.error,
+.success,
+.banned {
+    padding: 7px 8px;
+    margin-bottom: 8px;
+}
+
+.notice {
+    background: #fffbd0;
+    border: 1px solid #aaa25b;
+}
+
+.error {
+    background: #ffd7d7;
+    border: 1px solid #a33;
+    color: #500;
+}
+
+.success {
+    background: #dff3df;
+    border: 1px solid #699669;
+}
+
+.banned {
+    background: #fff;
+    border: 2px solid #900;
+    padding: 15px;
+}
+
+.banned h2 {
+    margin-top: 0;
+    color: #900;
+}
+
+
+/* =========================================================
+   ARCHIVE POSTS
+   ========================================================= */
+
+.archive-entry {
+    background: #efefef;
+    border: 1px solid #aaa;
+    margin-bottom: 7px;
+    cursor: pointer;
+}
+
+.archive-entry:hover {
+    background: #f7f7f7;
+}
+
+.archive-entry-header {
+    background: #d9d9d4;
+    border-bottom: 1px solid #aaa;
+    padding: 4px 7px;
+}
+
+.archive-entry-title {
+    color: #720000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.archive-entry-meta {
+    color: #666;
+    font-size: 10px;
+    margin-top: 1px;
+}
+
+.archive-entry-body {
+    padding: 7px 8px;
+    line-height: 1.45;
+}
+
+.archive-entry-footer {
+    background: #e4e4de;
+    border-top: 1px solid #ccc;
+    padding: 4px 7px;
+    font-size: 10px;
+    color: #666;
+}
+
+.read-link {
+    float: right;
+    color: #0000cc;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   SINGLE POST
+   ========================================================= */
+
+.full-post {
+    background: #efefef;
+    border: 1px solid #999;
+    margin-bottom: 9px;
+}
+
+.full-post-header {
+    background: #d4d4cf;
+    border-bottom: 1px solid #999;
+    padding: 7px 8px;
+}
+
+.full-post-title {
+    color: #720000;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.full-post-meta {
+    color: #666;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.full-post-body {
+    padding: 10px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    line-height: 1.5;
+    background: #f3f3ef;
+}
+
+.post-attachment {
+    border-top: 1px solid #ccc;
+    background: #e6e6e1;
+    padding: 8px;
+}
+
+.attachment-image {
+    display: block;
+    max-width: 100%;
+    max-height: 600px;
+    border: 1px solid #888;
+    margin-top: 6px;
+}
+
+.attachment-file {
+    display: inline-block;
+    color: #0000cc;
+    text-decoration: underline;
+}
+
+.file-info {
+    font-size: 10px;
+    color: #666;
+    margin-top: 3px;
+}
+
+.post-social {
+    background: #dfdfda;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 5px 7px;
+}
+
+.like-button {
+    min-width: 75px;
+}
+
+.like-button.liked {
+    color: #850000;
+    font-weight: bold;
+}
+
+.post-actions {
+    background: #e4e4df;
+    border-top: 1px solid #ccc;
+    padding: 4px 7px;
+    text-align: right;
+}
+
+
+/* =========================================================
+   COMMENTS
+   ========================================================= */
+
+.comments {
+    background: #e9e9e4;
+    border-top: 1px solid #bbb;
+    padding: 9px;
+}
+
+.comments-title {
+    color: #720000;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.comment {
+    border: 1px solid #aaa;
+    margin-bottom: 6px;
+    background: #f3f3f0;
+}
+
+.comment-header {
+    background: #d8d8d3;
+    border-bottom: 1px solid #aaa;
+    padding: 4px 6px;
+    font-size: 10px;
+    color: #555;
+}
+
+.comment-body {
+    padding: 7px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.comment-actions {
+    border-top: 1px solid #ddd;
+    padding: 3px 6px;
+    background: #e5e5e0;
+    text-align: right;
+}
+
+.comment-form {
+    margin-top: 9px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    height: 70px;
+}
+
+
+/* =========================================================
+   OWNER PANEL
+   ========================================================= */
+
+.owner-user {
+    background: #ededE8;
+    border: 1px solid #aaa;
+    padding: 7px;
+    margin-bottom: 5px;
+}
+
+.owner-user.banned-user {
+    border-left: 4px solid #900;
+}
+
+.owner-actions {
+    float: right;
+}
+
+.log-entry {
+    border-bottom: 1px dotted #999;
+    padding: 6px 2px;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   FORMS
+   ========================================================= */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    box-sizing: border-box;
+    border: 1px solid #777;
+    background: #fff;
+    padding: 4px;
+    font-family: Arial, Tahoma, sans-serif;
+    font-size: 12px;
+    color: #111;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 310px;
+}
+
+textarea {
+    width: 100%;
+    max-width: 700px;
+    height: 180px;
+}
+
+input[type="file"] {
+    width: 100%;
+    max-width: 700px;
+}
+
+input[type="submit"],
+button {
+    background: #d0cec5;
+    color: #111;
+    border: 1px solid #777;
+    padding: 3px 9px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: Arial, Tahoma, sans-serif;
+}
+
+input[type="submit"]:hover,
+button:hover {
+    background: #e2e0d8;
+}
+
+button.danger {
+    color: #900;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    padding: 3px 6px 3px 0;
+    vertical-align: top;
+}
+
+
+/* =========================================================
+   MISC
+   ========================================================= */
+
+.small {
+    font-size: 10px;
+}
+
+.red {
+    color: #850000;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.loading {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+}
+
+.counter {
+    font-family: "Courier New", monospace;
+    background: #181818;
+    color: #55ff55;
+    border: 1px solid #555;
+    padding: 1px 4px;
+}
+
+.back-link {
+    margin-bottom: 7px;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #aaa;
+    margin: 10px 0;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer {
+    width: 100%;
+    background: #bdb9ad;
+    border-top: 1px solid #888;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 10px;
+    color: #555;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .header-top {
+        display: block;
+    }
+
+    .user-status {
+        margin-top: 5px;
+        text-align: left;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .page {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+        width: 100%;
+    }
+
+    .nav a {
+        margin-right: 8px;
+    }
+
+    .owner-actions {
+        float: none;
+        margin-bottom: 5px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+
+<div class="header">
+
+    <div class="header-inner">
+
+        <div class="header-top">
+
+            <div class="logo-area">
+
+                <h1>
+                    THE RED ARCHIVE
+                </h1>
+
+                <p>
+                    An independent archive for things worth remembering.
+                </p>
+
+            </div>
+
+            <div
+                class="user-status"
+                id="userStatus"
+            >
+                Guest
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     NAV
+     ========================================================= -->
+
+<div class="nav">
+
+    <div class="nav-inner">
+
+        <a href="#home">Home</a>
+
+        <span class="nav-separator">|</span>
+
+        <a href="#archive">Archive</a>
+
+        <span class="nav-separator">|</span>
+
+        <a href="#members">Members</a>
+
+        <span class="nav-separator">|</span>
+
+        <a href="#about">About</a>
+
+        <span class="nav-separator">|</span>
+
+        <span id="guestLinks">
+
+            <a href="#login">Login</a>
+
+            <span class="nav-separator">|</span>
+
+            <a href="#register">Register</a>
+
+        </span>
+
+        <span
+            id="memberLinks"
+            class="hidden"
+        >
+
+            <a href="#post">
+                Post Something
+            </a>
+
+            <span class="nav-separator">|</span>
+
+            <a
+                href="#owner"
+                id="ownerLink"
+                class="hidden"
+            >
+                Owner Panel
+            </a>
+
+            <span
+                id="ownerSeparator"
+                class="nav-separator hidden"
+            >
+                |
+            </span>
+
+            <a
+                href="#"
+                id="logoutLink"
+            >
+                Logout
+            </a>
+
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MAIN PAGE
+     ========================================================= -->
+
+<div class="page">
+
+    <div
+        id="messageArea"
+        class="message-area"
+    ></div>
+
+    <div
+        id="app"
+        class="content"
+    >
+
+        <div class="loading">
+            Loading archive...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<div class="footer">
+
+    The Red Archive &copy; 2000-2026
+
+    &nbsp;|&nbsp;
+
+    Best viewed at 1024x768
+
+    &nbsp;|&nbsp;
+
+    Visitor counter:
+
+    <span
+        class="counter"
+        id="visitorCounter"
+    >
+        000001
+    </span>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL =
+    "https://kiexpjqaaoxsbiwcdtrf.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_1IGxAZM2xFVEfDd1GT8MzQ_JnPkhegd";
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+        {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true
+            }
+        }
+    );
+
+
+/* =========================================================
+   CONSTANTS
+   ========================================================= */
+
+const OWNER_EMAIL =
+    "ognjendev1@gmail.com";
+
+const STORAGE_BUCKET =
+    "archive-files";
+
+const MAX_FILE_SIZE =
+    5 * 1024 * 1024;
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let currentUser = null;
+let currentProfile = null;
+let isOwner = false;
+let currentBan = null;
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function truncateText(
+    text,
+    length = 100
+) {
+
+    if (!text) {
+        return "";
+    }
+
+    if (
+        text.length <= length
+    ) {
+        return text;
+    }
+
+    return (
+        text
+            .substring(0, length)
+            .trim() +
+        "..."
+    );
+}
+
+function formatDate(value) {
+
+    if (!value) {
+        return "";
+    }
+
+    return new Date(
+        value
+    ).toLocaleString();
+}
+
+function formatFileSize(bytes) {
+
+    if (
+        bytes === null ||
+        bytes === undefined
+    ) {
+        return "";
+    }
+
+    if (
+        bytes < 1024
+    ) {
+        return bytes + " B";
+    }
+
+    if (
+        bytes < 1024 * 1024
+    ) {
+        return (
+            (bytes / 1024).toFixed(1) +
+            " KB"
+        );
+    }
+
+    return (
+        (bytes / 1024 / 1024).toFixed(2) +
+        " MB"
+    );
+}
+
+function showMessage(
+    text,
+    type = "success"
+) {
+
+    document.getElementById(
+        "messageArea"
+    ).innerHTML = `
+        <div class="${type}">
+            ${escapeHTML(text)}
+        </div>
+    `;
+
+    window.scrollTo(
+        0,
+        0
+    );
+
+    setTimeout(() => {
+
+        document.getElementById(
+            "messageArea"
+        ).innerHTML = "";
+
+    }, 5000);
+}
+
+
+/* =========================================================
+   OWNER
+   ========================================================= */
+
+function checkOwner() {
+
+    if (!currentUser) {
+        return false;
+    }
+
+    if (!currentUser.email) {
+        return false;
+    }
+
+    return (
+        currentUser.email.toLowerCase() ===
+        OWNER_EMAIL.toLowerCase()
+    );
+}
+
+
+/* =========================================================
+   AUTH STATE
+   ========================================================= */
+
+async function updateAuthState() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
+
+    if (error) {
+
+        currentUser = null;
+        currentProfile = null;
+
+    } else {
+
+        currentUser =
+            data.user || null;
+    }
+
+    if (!currentUser) {
+
+        currentProfile = null;
+        isOwner = false;
+
+        document.getElementById(
+            "userStatus"
+        ).textContent =
+            "Guest";
+
+        document.getElementById(
+            "guestLinks"
+        ).classList.remove(
+            "hidden"
+        );
+
+        document.getElementById(
+            "memberLinks"
+        ).classList.add(
+            "hidden"
+        );
+
+        document.getElementById(
+            "ownerLink"
+        ).classList.add(
+            "hidden"
+        );
+
+        document.getElementById(
+            "ownerSeparator"
+        ).classList.add(
+            "hidden"
+        );
+
+        return;
+    }
+
+    const {
+        data: profile
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select("username")
+            .eq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+    currentProfile =
+        profile || null;
+
+    isOwner =
+        checkOwner();
+
+    const username =
+        currentProfile?.username ||
+        currentUser.email ||
+        "Member";
+
+    document.getElementById(
+        "userStatus"
+    ).innerHTML =
+        "Logged in as <b>" +
+        escapeHTML(username) +
+        "</b>";
+
+    document.getElementById(
+        "guestLinks"
+    ).classList.add(
+        "hidden"
+    );
+
+    document.getElementById(
+        "memberLinks"
+    ).classList.remove(
+        "hidden"
+    );
+
+    if (isOwner) {
+
+        document.getElementById(
+            "ownerLink"
+        ).classList.remove(
+            "hidden"
+        );
+
+        document.getElementById(
+            "ownerSeparator"
+        ).classList.remove(
+            "hidden"
+        );
+
+    } else {
+
+        document.getElementById(
+            "ownerLink"
+        ).classList.add(
+            "hidden"
+        );
+
+        document.getElementById(
+            "ownerSeparator"
+        ).classList.add(
+            "hidden"
+        );
+    }
+}
+
+
+/* =========================================================
+   MODERATION CHECK
+   ========================================================= */
+
+async function checkModerationStatus() {
+
+    if (!currentUser) {
+        return true;
+    }
+
+    try {
+
+        isOwner =
+            checkOwner();
+
+        const {
+            data: bans,
+            error
+        } =
+            await supabaseClient
+                .from("user_bans")
+                .select("*")
+                .eq(
+                    "user_id",
+                    currentUser.id
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                )
+                .limit(1);
+
+        if (error) {
+
+            console.error(
+                "Ban check error:",
+                error
+            );
+
+            return true;
+        }
+
+        currentBan =
+            bans &&
+            bans.length
+                ? bans[0]
+                : null;
+
+        if (!currentBan) {
+            return true;
+        }
+
+        if (
+            currentBan.expires_at &&
+            new Date(
+                currentBan.expires_at
+            ) <= new Date()
+        ) {
+
+            currentBan = null;
+
+            return true;
+        }
+
+        await supabaseClient
+            .auth
+            .signOut();
+
+        currentUser = null;
+        currentProfile = null;
+        isOwner = false;
+
+        showBannedPage(
+            bans[0]
+        );
+
+        return false;
+
+    } catch (error) {
+
+        console.error(
+            "Moderation check failed:",
+            error
+        );
+
+        isOwner =
+            checkOwner();
+
+        return true;
+    }
+}
+
+
+/* =========================================================
+   BANNED PAGE
+   ========================================================= */
+
+function showBannedPage(ban) {
+
+    const expiry =
+        ban?.expires_at
+            ? formatDate(
+                ban.expires_at
+            )
+            : "Permanent";
+
+    document.getElementById(
+        "app"
+    ).innerHTML = `
+
+        <div class="section">
+
+            <div class="section-title">
+                ACCESS RESTRICTED
+            </div>
+
+            <div class="section-body">
+
+                <div class="banned">
+
+                    <h2>
+                        Your account is banned.
+                    </h2>
+
+                    <p>
+                        <b>Reason:</b>
+                        ${escapeHTML(
+                            ban?.reason ||
+                            "No reason provided."
+                        )}
+                    </p>
+
+                    <p>
+                        <b>Ban expires:</b>
+                        ${escapeHTML(
+                            expiry
+                        )}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+async function showHome() {
+
+    document.getElementById(
+        "app"
+    ).innerHTML = `
+
+        <div class="section">
+
+            <div class="section-title">
+                THE RED ARCHIVE
+            </div>
+
+            <div class="section-body">
+
+                <h2 class="welcome-title">
+                    Welcome to The Red Archive
+                </h2>
+
+                <div class="welcome-subtitle">
+                    An independent archive for things
+                    worth remembering.
+                </div>
+
+                <p>
+                    This is a community archive where
+                    members can submit posts, images,
+                    files and stories.
+                </p>
+
+                ${
+                    currentUser
+                    ?
+                    `
+                        <p>
+                            <a href="#post">
+                                Submit something to the archive.
+                            </a>
+                        </p>
+                    `
+                    :
+                    `
+                        <p>
+                            <a href="#register">
+                                Register
+                            </a>
+                            or
+                            <a href="#login">
+                                log in
+                            </a>
+                            to participate.
+                        </p>
+                    `
+                }
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="section-title">
+                LATEST ARCHIVE ENTRIES
+            </div>
+
+            <div
+                class="section-body"
+                id="latestPosts"
+            >
+                Loading...
+            </div>
+
+        </div>
+    `;
+
+    await loadArchiveCards(
+        "latestPosts",
+        5
+    );
+}
+
+
+/* =========================================================
+   ARCHIVE
+   ========================================================= */
+
+async function showArchive() {
+
+    document.getElementById(
+        "app"
+    ).innerHTML = `
+
+        <div class="section">
+
+            <div class="section-title">
+                ARCHIVE
+            </div>
+
+            <div class="section-body">
+
+                <b>
+                    THE RED ARCHIVE
+                </b>
+
+                <p class="small">
+                    Browse the latest records
+                    submitted by members.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div id="archivePosts">
+            Loading archive...
+        </div>
+    `;
+
+    await loadArchiveCards(
+        "archivePosts"
+    );
+}
+
+async function loadArchiveCards(
+    containerId,
+    limit = null
+) {
+
+    const container =
+        document.getElementById(
+            containerId
+        );
+
+    let query =
+        supabaseClient
+            .from("posts")
+            .select("*")
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+    if (
+        limit !== null
+    ) {
+        query =
+            query.limit(limit);
+    }
+
+    const {
+        data,
+        error
+    } = await query;
+
+    if (error) {
+
+        container.innerHTML = `
+            <div class="error">
+                Unable to load archive entries.
+            </div>
+        `;
+
+        console.error(error);
+
+        return;
+    }
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        container.innerHTML = `
+            <div class="notice">
+                The archive is currently empty.
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        data
+            .map(
+                renderArchiveCard
+            )
+            .join("");
+
+    await loadCardSocialData(
+        data
+    );
+}
+
+function renderArchiveCard(post) {
+
+    return `
+
+        <div
+            class="archive-entry"
+            onclick="openPost(${post.id})"
+        >
+
+            <div class="archive-entry-header">
+
+                <div class="archive-entry-title">
+
+                    #${String(
+                        post.id
+                    ).padStart(5, "0")}
+
+                    ${escapeHTML(
+                        post.title
+                    )}
+
+                </div>
+
+                <div class="archive-entry-meta">
+
+                    Posted by
+                    <b>
+                        ${escapeHTML(
+                            post.username
+                        )}
+                    </b>
+
+                    &middot;
+
+                    ${escapeHTML(
+                        formatDate(
+                            post.created_at
+                        )
+                    )}
+
+                </div>
+
+            </div>
+
+            <div class="archive-entry-body">
+
+                ${escapeHTML(
+                    truncateText(
+                        post.content,
+                        160
+                    )
+                )}
+
+            </div>
+
+            <div
+                class="archive-entry-footer"
+                id="card-social-${post.id}"
+            >
+
+                Loading...
+
+                <span class="read-link">
+                    Reply / View &gt;&gt;
+                </span>
+
+            </div>
+
+        </div>
+    `;
+}
+
+async function loadCardSocialData(
+    posts
+) {
+
+    const ids =
+        posts.map(
+            post => post.id
+        );
+
+    const {
+        data: likes
+    } =
+        await supabaseClient
+            .from("likes")
+            .select("post_id")
+            .in(
+                "post_id",
+                ids
+            );
+
+    const {
+        data: comments
+    } =
+        await supabaseClient
+            .from("comments")
+            .select("post_id")
+            .in(
+                "post_id",
+                ids
+            );
+
+    posts.forEach(
+        post => {
+
+            const likeCount =
+                (likes || [])
+                    .filter(
+                        x =>
+                            x.post_id ===
+                            post.id
+                    )
+                    .length;
+
+            const commentCount =
+                (comments || [])
+                    .filter(
+                        x =>
+                            x.post_id ===
+                            post.id
+                    )
+                    .length;
+
+            const element =
+                document.getElementById(
+                    "card-social-" +
+                    post.id
+                );
+
+            if (!element) {
+                return;
+            }
+
+            element.innerHTML = `
+
+                ♥ ${likeCount}
+                ${
+                    likeCount === 1
+                        ? "Like"
+                        : "Likes"
+                }
+
+                &nbsp;|&nbsp;
+
+                ${commentCount}
+                ${
+                    commentCount === 1
+                        ? "Comment"
+                        : "Comments"
+                }
+
+                <span class="read-link">
+                    Reply / View &gt;&gt;
+                </span>
+            `;
+        }
+    );
+}
+
+
+/* =========================================================
+   SINGLE POST
+   ========================================================= */
+
+function openPost(id) {
+
+    location.hash =
+        "post-" + id;
+}
+
+async function showSinglePost(
+    id
+) {
+
+    const app =
+        document.getElementById(
+            "app"
+        );
+
+    app.innerHTML = `
+
+        <div class="back-link">
+            <a href="#archive">
+                &lt;&lt; Back to Archive
+            </a>
+        </div>
+
+        <div id="singlePost">
+
+            <div class="loading">
+                Loading archive record...
+            </div>
+
+        </div>
+    `;
+
+    const {
+        data: post,
+        error
+    } =
+        await supabaseClient
+            .from("posts")
+            .select("*")
+            .eq(
+                "id",
+                id
+            )
+            .maybeSingle();
+
+    if (error) {
+
+        document.getElementById(
+            "singlePost"
+        ).innerHTML = `
+            <div class="error">
+                Unable to load this archive entry.
+            </div>
+        `;
+
+        return;
+    }
+
+    if (!post) {
+
+        document.getElementById(
+            "singlePost"
+        ).innerHTML = `
+            <div class="notice">
+
+                Archive entry not found.
+
+                <br><br>
+
+                <a href="#archive">
+                    Return to Archive
+                </a>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    const {
+        data: likes
+    } =
+        await supabaseClient
+            .from("likes")
+            .select(
+                "id, user_id"
+            )
+            .eq(
+                "post_id",
+                id
+            );
+
+    const {
+        data: comments
+    } =
+        await supabaseClient
+            .from("comments")
+            .select("*")
+            .eq(
+                "post_id",
+                id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            );
+
+    const postLikes =
+        likes || [];
+
+    const postComments =
+        comments || [];
+
+    const userLiked =
+        currentUser &&
+        postLikes.some(
+            x =>
+                x.user_id ===
+                currentUser.id
+        );
+
+    let attachmentHTML =
+        "";
+
+    if (
+        post.attachment_path
+    ) {
+
+        const {
+            data
+        } =
+            supabaseClient
+                .storage
+                .from(
+                    STORAGE_BUCKET
+                )
+                .getPublicUrl(
+                    post.attachment_path
+                );
+
+        const fileURL =
+            data.publicUrl;
+
+        if (
+            post.attachment_type &&
+            post.attachment_type.startsWith(
+                "image/"
+            )
+        ) {
+
+            attachmentHTML = `
+
+                <div class="post-attachment">
+
+                    <b>Attachment:</b>
+
+                    <br>
+
+                    <img
+                        class="attachment-image"
+                        src="${escapeHTML(
+                            fileURL
+                        )}"
+                        alt="${escapeHTML(
+                            post.attachment_name ||
+                            "Image"
+                        )}"
+                    >
+
+                    <div class="file-info">
+
+                        ${escapeHTML(
+                            post.attachment_name
+                        )}
+
+                        -
+
+                        ${escapeHTML(
+                            formatFileSize(
+                                post.attachment_size
+                            )
+                        )}
+
+                    </div>
+
+                </div>
+            `;
+
+        } else {
+
+            attachmentHTML = `
+
+                <div class="post-attachment">
+
+                    <b>Attachment:</b>
+
+                    <br><br>
+
+                    <a
+                        class="attachment-file"
+                        href="${escapeHTML(
+                            fileURL
+                        )}"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Download
+                        ${escapeHTML(
+                            post.attachment_name ||
+                            "file"
+                        )}
+                    </a>
+
+                    <div class="file-info">
+
+                        ${escapeHTML(
+                            formatFileSize(
+                                post.attachment_size
+                            )
+                        )}
+
+                    </div>
+
+                </div>
+            `;
+        }
+    }
+
+    const canDelete =
+        currentUser &&
+        currentUser.id ===
+        post.user_id;
+
+    document.getElementById(
+        "singlePost"
+    ).innerHTML = `
+
+        <div class="full-post">
+
+            <div class="full-post-header">
+
+                <div class="full-post-title">
+
+                    #${String(
+                        post.id
+                    ).padStart(5, "0")}
+
+                    ${escapeHTML(
+                        post.title
+                    )}
+
+                </div>
+
+                <div class="full-post-meta">
+
+                    Posted by
+                    <b>
+                        ${escapeHTML(
+                            post.username
+                        )}
+                    </b>
+
+                    &middot;
+
+                    ${escapeHTML(
+                        formatDate(
+                            post.created_at
+                        )
+                    )}
+
+                </div>
+
+            </div>
+
+            <div class="full-post-body">
+
+                ${escapeHTML(
+                    post.content
+                )}
+
+            </div>
+
+            ${attachmentHTML}
+
+            <div class="post-social">
+
+                <button
+                    class="like-button ${
+                        userLiked
+                            ? "liked"
+                            : ""
+                    }"
+                    onclick="
+                        toggleLike(
+                            ${post.id}
+                        )
+                    "
+                >
+                    ${
+                        userLiked
+                            ? "♥ Liked"
+                            : "♥ Like"
+                    }
+                </button>
+
+                &nbsp;
+
+                <b>
+                    ${postLikes.length}
+                </b>
+
+                ${
+                    postLikes.length === 1
+                        ? "Like"
+                        : "Likes"
+                }
+
+            </div>
+
+            ${
+                canDelete
+                    ? `
+                        <div class="post-actions">
+
+                            <button
+                                class="danger"
+                                onclick="
+                                    deletePost(
+                                        ${post.id}
+                                    )
+                                "
+                            >
+                                Delete This Entry
+                            </button>
+
+                        </div>
+                    `
+                    : ""
+            }
+
+            <div class="comments">
+
+                <div class="comments-title">
+                    Replies (${postComments.length})
+                </div>
+
+                ${
+                    postComments.length === 0
+                        ? `
+                            <div class="small">
+                                No replies yet.
+                            </div>
+                        `
+                        :
+                        postComments
+                            .map(
+                                renderComment
+                            )
+                            .join("")
+                }
+
+                ${
+                    currentUser
+                        ? `
+                            <form
+                                class="comment-form"
+                                onsubmit="
+                                    submitComment(
+                                        event,
+                                        ${post.id}
+                                    )
+                                "
+                            >
+
+                                <textarea
+                                    id="comment-input-${post.id}"
+                                    maxlength="5000"
+                                    placeholder="Write a reply..."
+                                    required
+                                ></textarea>
+
+                                <br><br>
+
+                                <input
+                                    type="submit"
+                                    value="Submit Reply"
+                                >
+
+                            </form>
+                        `
+                        :
+                        `
+                            <div class="small">
+                                <a href="#login">
+                                    Log in
+                                </a>
+                                to reply or like this post.
+                            </div>
+                        `
+                }
+
+            </div>
+
+        </div>
+    `;
+}
+
+function renderComment(
+    comment
+) {
+
+    const canDelete =
+        currentUser &&
+        currentUser.id ===
+        comment.user_id;
+
+    return `
+
+        <div class="comment">
+
+            <div class="comment-header">
+
+                <b>
+                    ${escapeHTML(
+                        comment.username
+                    )}
+                </b>
+
+                &middot;
+
+                ${escapeHTML(
+                    formatDate(
+                        comment.created_at
+                    )
+                )}
+
+            </div>
+
+            <div class="comment-body">
+
+                ${escapeHTML(
+                    comment.content
+                )}
+
+            </div>
+
+            ${
+                canDelete
+                    ? `
+                        <div class="comment-actions">
+
+                            <button
+                                class="danger"
+                                onclick="
+                                    deleteComment(
+                                        ${comment.id},
+                                        ${comment.post_id}
+                                    )
+                                "
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+                    `
+                    : ""
+            }
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   LIKES
+   ========================================================= */
+
+async function toggleLike(
+    postId
+) {
+
+    if (!currentUser) {
+
+        showMessage(
+            "You must be logged in to like posts.",
+            "error"
+        );
+
+        location.hash =
+            "login";
+
+        return;
+    }
+
+    const {
+        data: existing
+    } =
+        await supabaseClient
+            .from("likes")
+            .select("id")
+            .eq(
+                "post_id",
+                postId
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+    if (existing) {
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("likes")
+                .delete()
+                .eq(
+                    "id",
+                    existing.id
+                )
+                .eq(
+                    "user_id",
+                    currentUser.id
+                );
+
+        if (error) {
+
+            showMessage(
+                "Could not remove like: " +
+                error.message,
+                "error"
+            );
+
+            return;
+        }
+
+    } else {
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("likes")
+                .insert({
+                    post_id:
+                        postId,
+                    user_id:
+                        currentUser.id
+                });
+
+        if (error) {
+
+            showMessage(
+                "Could not like this post: " +
+                error.message,
+                "error"
+            );
+
+            return;
+        }
+    }
+
+    await showSinglePost(
+        postId
+    );
+}
+
+
+/* =========================================================
+   COMMENTS
+   ========================================================= */
+
+async function submitComment(
+    event,
+    postId
+) {
+
+    event.preventDefault();
+
+    if (!currentUser) {
+        return;
+    }
+
+    const textarea =
+        document.getElementById(
+            "comment-input-" +
+            postId
+        );
+
+    const content =
+        textarea.value.trim();
+
+    if (!content) {
+        return;
+    }
+
+    const username =
+        currentProfile?.username ||
+        currentUser.email ||
+        "Unknown";
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("comments")
+            .insert({
+                post_id:
+                    postId,
+                user_id:
+                    currentUser.id,
+                username:
+                    username,
+                content:
+                    content
+            });
+
+    if (error) {
+
+        showMessage(
+            "Could not post comment: " +
+            error.message,
+            "error"
+        );
+
+        return;
+    }
+
+    await showSinglePost(
+        postId
+    );
+}
+
+async function deleteComment(
+    commentId,
+    postId
+) {
+
+    if (!currentUser) {
+        return;
+    }
+
+    if (
+        !confirm(
+            "Delete this reply?"
+        )
+    ) {
+        return;
+    }
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("comments")
+            .delete()
+            .eq(
+                "id",
+                commentId
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+    if (error) {
+
+        showMessage(
+            "Could not delete reply.",
+            "error"
+        );
+
+        return;
+    }
+
+    await showSinglePost(
+        postId
+    );
+}
+
+
+/* =========================================================
+   DELETE POST
+   ========================================================= */
+
+async function deletePost(
+    id
+) {
+
+    if (!currentUser) {
+        return;
+    }
+
+    if (
+        !confirm(
+            "Delete this archive entry?"
+        )
+    ) {
+        return;
+    }
+
+    const {
+        data: post
+    } =
+        await supabaseClient
+            .from("posts")
+            .select(
+                "attachment_path"
+            )
+            .eq(
+                "id",
+                id
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+    if (
+        post &&
+        post.attachment_path
+    ) {
+
+        await supabaseClient
+            .storage
+            .from(
+                STORAGE_BUCKET
+            )
+            .remove([
+                post.attachment_path
+            ]);
+    }
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("posts")
+            .delete()
+            .eq(
+                "id",
+                id
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+    if (error) {
+
+        showMessage(
+            "Could not delete the post.",
+            "error"
+        );
+
+        return;
+    }
+
+    location.hash =
+        "archive";
+}
+
+
+/* =========================================================
+   REGISTER
+   ========================================================= */
+
+function showRegister() {
+
+    document.getElementById(
+        "app"
+    ).innerHTML = `
+
+        <div class="section">
+
+            <div class="section-title">
+                REGISTER
+            </div>
+
+            <div class="section-body">
+
+                <form id="registerForm">
+
+                    <table>
+
+                        <tr>
+
+                            <td>
+                                <b>Username:</b>
+                            </td>
+
+                            <td>
+
+                                <input
+                                    type="text"
+                                    id="registerUsername"
+                                    maxlength="30"
+                                    required
+                                >
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                <b>Email:</b>
+                            </td>
+
+                            <td>
+
+                                <input
+                                    type="email"
+                                    id="registerEmail"
+                                    required
+                                >
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                <b>Password:</b>
+                            </td>
+
+                            <td>
+
+                                <input
+                                    type="password"
+                                    id="registerPassword"
+                                    minlength="6"
+                                    required
+                                >
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td></td>
+
+                            <td>
+
+                                <input
+                                    type="submit"
+                                    value="Register"
+                                >
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </form>
+
+                <hr>
+
+                Already registered?
+
+                <a href="#login">
+                    Login here.
+                </a>
+
+            </div>
+
+        </div>
+    `;
+
+    document
+        .getElementById(
+            "registerForm"
+        )
+        .addEventListener(
+            "submit",
+            register
+        );
+}
+
+async function register(
+    event
+) {
+
+    event.preventDefault();
+
+    const username =
+        document
+            .getElementById(
+                "registerUsername"
+            )
+            .value
+            .trim();
+
+    const email =
+        document
+            .getElementById(
+                "registerEmail"
+            )
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById(
+                "registerPassword"
+            )
+            .value;
+
+    if (
+        username.length < 3 ||
+        username.length > 30
+    ) {
+
+        showMessage(
+            "Username must be between 3 and 30 characters.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (
+        !/^[A-Za-z0-9_-]+$/.test(
+            username
+        )
+    ) {
+
+        showMessage(
+            "Username may only contain letters, numbers, _ and -.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (
+        password.length < 6
+    ) {
+
+        showMessage(
+            "Password must be at least 6 characters.",
+            "error"
+        );
+
+        return;
+    }
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        username
+                    }
+                }
+            });
+
+    if (error) {
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+        return;
+    }
+
+    if (
+        data &&
+        data.session
+    ) {
+
+        await updateAuthState();
+
+        await checkModerationStatus();
+
+        if (currentUser) {
+
+            showMessage(
+                "Account created successfully."
+            );
+
+            navigate(
+                "home"
+            );
+        }
+
+    } else {
+
+        showMessage(
+            "Account created. Check your email to confirm your account."
+        );
+
+        navigate(
+            "login"
+        );
+    }
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+function showLogin() {
+
+    document.getElementById(
+        "app"
+    ).innerHTML = `
+
+        <div class="section">
+
+            <div class="section-title">
+                LOGIN
+            </div>
+
+            <div class="section-body">
+
+                <form id="loginForm">
+
+                    <table>
+
+                        <tr>
+
+                            <td>
+                                <b>Email:</b>
+                            </td>
+
+                            <td>
+
+                                <input
+                                    type="email"
+                                    id="loginEmail"
+                                    required
+                                >
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                <b>Password:</b>
+                            </td>
+
+                            <td>
+
+                                <input
+                                    type="password"
+                                    id="loginPassword"
+                                    required
+                                >
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td></td>
+
+                            <td>
+
+                                <input
+                                    type="submit"
+                                    value="Login"
+                                >
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </form>
+
+                <hr>
+
+                Don't have an account?
+
+                <a href="#register">
+                    Register here.
+                </a>
+
+            </div>
+
+        </div>
+    `;
+
+    document
+        .getElementById(
+            "loginForm"
+        )
+        .addEventListener(
+            "submit",
+            login
+        );
+}
+
+async function login(
+    event
+) {
+
+    event.preventDefault();
+
+    const email =
+        document
+            .getElementById(
+                "loginEmail"
+            )
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById(
+                "loginPassword"
+            )
+            .value;
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .signInWithPassword({
+                email,
+                password
+            });
+
+    if (error) {
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+        return;
+    }
+
+    currentUser =
+        data.user;
+
+    await updateAuthState();
+
+    const allowed =
+        await checkModerationStatus();
+
+    if (!allowed) {
+        return;
+    }
+
+    showMessage(
+        "Welcome back."
+    );
+
+    navigate(
+        "home"
+    );
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+async function logout() {
+
+    await supabaseClient
+        .auth
+        .signOut();
+
+    currentUser = null;
+    currentProfile = null;
+    isOwner = false;
+
+    await updateAuthState();
+
+    navigate(
+        "home"
+    );
+}
+
+
+/* =========================================================
+   POST PAGE
+   ========================================================= */
+
+function showPostPage() {
+
+    if (!currentUser) {
+
+        navigate(
+            "login"
+        );
+
+        return;
+    }
+
+    document.getElementById(
+        "app"
+    ).innerHTML = `
+
+        <div class="section">
+
+            <div class="section-title">
+                NEW ARCHIVE ENTRY
+            </div>
+
+            <div class="section-body">
+
+                <form id="postForm">
+
+                    <p>
+                        <b>Title:</b><br>
+
+                        <input
+                            type="text"
+                            id="postTitle"
+                            maxlength="200"
+                            style="
+                                width:100%;
+                                max-width:700px;
+                            "
+                            required
+                        >
+                    </p>
+
+                    <p>
+                        <b>Content:</b><br>
+
+                        <textarea
+                            id="postContent"
+                            maxlength="10000"
+                            required
+                        ></textarea>
+                    </p>
+
+                    <p>
+
+                        <b>Attachment:</b><br><br>
+
+                        <input
+                            type="file"
+                            id="postFile"
+                        >
+
+                        <br>
+
+                        <span class="small">
+
+                            Maximum file size:
+                            <b>5 MB</b>
+
+                        </span>
+
+                    </p>
+
+                    <p>
+
+                        <input
+                            type="submit"
+                            value="Submit Entry"
+                        >
+
+                        &nbsp;
+
+                        <button
+                            type="button"
+                            onclick="
+                                navigate('archive')
+                            "
+                        >
+                            Cancel
+                        </button>
+
+                    </p>
+
+                </form>
+
+            </div>
+
+        </div>
+    `;
+
+    document
+        .getElementById(
+            "postForm"
+        )
+        .addEventListener(
+            "submit",
+            createPost
+        );
+}
+
+function safeFileName(
+    name
+) {
+
+    return name
+        .replace(
+            /[^a-zA-Z0-9._(),!$@=;+\- ]/g,
+            "_"
+        )
+        .replace(
+            /\s+/g,
+            "_"
+        );
+}
+
+async function createPost(
+    event
+) {
+
+    event.preventDefault();
+
+    if (!currentUser) {
+        return;
+    }
+
+    const title =
+        document
+            .getElementById(
+                "postTitle"
+            )
+            .value
+            .trim();
+
+    const content =
+        document
+            .getElementById(
+                "postContent"
+            )
+            .value
+            .trim();
+
+    const file =
+        document
+            .getElementById(
+                "postFile"
+            )
+            .files[0] ||
+        null;
+
+    if (
+        !title ||
+        !content
+    ) {
+
+        showMessage(
+            "Please fill in both fields.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (
+        file &&
+        file.size >
+        MAX_FILE_SIZE
+    ) {
+
+        showMessage(
+            "The file is larger than 5 MB.",
+            "error"
+        );
+
+        return;
+    }
+
+    let attachmentPath = null;
+    let attachmentName = null;
+    let attachmentType = null;
+    let attachmentSize = null;
+
+    if (file) {
+
+        attachmentPath =
+            currentUser.id +
+            "/" +
+            Date.now() +
+            "_" +
+            Math.random()
+                .toString(36)
+                .substring(
+                    2,
+                    10
+                ) +
+            "_" +
+            safeFileName(
+                file.name
+            );
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .storage
+                .from(
+                    STORAGE_BUCKET
+                )
+                .upload(
+                    attachmentPath,
+                    file,
+                    {
+                        cacheControl:
+                            "3600",
+                        contentType:
+                            file.type ||
+                            "application/octet-stream",
+                        upsert:
+                            false
+                    }
+                );
+
+        if (error) {
+
+            showMessage(
+                "Could not upload the file: " +
+                error.message,
+                "error"
+            );
+
+            return;
+        }
+
+        attachmentName =
+            file.name;
+
+        attachmentType =
+            file.type ||
+            "application/octet-stream";
+
+        attachmentSize =
+            file.size;
+    }
+
+    const username =
+        currentProfile?.username ||
+        currentUser.email ||
+        "Unknown";
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("posts")
+            .insert({
+                user_id:
+                    currentUser.id,
+                username:
+                    username,
+                title:
+                    title,
+                content:
+                    content,
+                attachment_path:
+                    attachmentPath,
+                attachment_name:
+                    attachmentName,
+                attachment_type:
+                    attachmentType,
+                attachment_size:
+                    attachmentSize
+            });
+
+    if (error) {
+
+        if (attachmentPath) {
+
+            await supabaseClient
+                .storage
+                .from(
+                    STORAGE_BUCKET
+                )
+                .remove([
+                    attachmentPath
+                ]);
+        }
+
+        showMessage(
+            "Could not submit post: " +
+            error.message,
+            "error"
+        );
+
+        return;
+    }
+
+    showMessage(
+        "Your entry has been added."
+    );
+
+    navigate(
+        "archive"
+    );
+}
+
+
+/* =========================================================
+   MEMBERS
+   ========================================================= */
+
+async function showMembers() {
+
+    const app =
+        document.getElementById(
+            "app"
+        );
+
+    app.innerHTML = `
+
+        <div class="section">
+
+            <div class="section-title">
+                MEMBERS
+            </div>
+
+            <div class="section-body">
+                Loading members...
+            </div>
+
+        </div>
+    `;
+
+    const body =
+        app.querySelector(
+            ".section-body"
+        );
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "username, created_at"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            );
+
+    if (error) {
+
+        body.innerHTML =
+            `
+                <div class="error">
+                    Could not load members.
+                </div>
+            `;
+
+        return;
+    }
+
+    body.innerHTML = `
+
+        <p>
+            Registered members:
+            <b>${data.length}</b>
+        </p>
+
+        <hr>
+
+        ${
+            data
+                .map(
+                    user => `
+                        <div class="owner-user">
+
+                            <b>
+                                ${escapeHTML(
+                                    user.username
+                                )}
+                            </b>
+
+                            <span class="small">
+
+                                &middot;
+
+                                Joined
+                                ${escapeHTML(
+                                    formatDate(
+                                        user.created_at
+                                    )
+                                )}
+
+                            </span>
+
+                        </div>
+                    `
+                )
+                .join("")
+        }
+
+    `;
+}
+
+
+/* =========================================================
+   OWNER PANEL
+   ========================================================= */
+
+async function showOwnerPanel() {
+
+    if (!currentUser) {
+
+        showMessage(
+            "You must be logged in.",
+            "error"
+        );
+
+        navigate(
+            "login"
+        );
+
+        return;
+    }
+
+    isOwner =
+        checkOwner();
+
+    if (!isOwner) {
+
+        showMessage(
+            "Owner permission required.",
+            "error"
+        );
+
+        navigate(
+            "home"
+        );
+
+        return;
+    }
+
+    document.getElementById(
+        "app"
+    ).innerHTML = `
+
+        <div class="section">
+
+            <div class="section-title">
+                OWNER PANEL
+            </div>
+
+            <div class="section-body">
+
+                <b>
+                    The Red Archive Moderation
+                </b>
+
+                <p class="small">
+
+                    Owner account:
+
+                    <b>
+                        ${escapeHTML(
+                            currentUser.email
+                        )}
+                    </b>
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="section-title">
+                USERS
+            </div>
+
+            <div class="section-body">
+
+                <div id="ownerUsers">
+                    Loading users...
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="section-title">
+                MODERATION LOG
+            </div>
+
+            <div class="section-body">
+
+                <div id="moderationLog">
+                    Loading...
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    await loadOwnerUsers();
+    await loadModerationLog();
+}
+
+async function loadOwnerUsers() {
+
+    const container =
+        document.getElementById(
+            "ownerUsers"
+        );
+
+    if (!isOwner) {
+
+        container.innerHTML =
+            `
+                <div class="error">
+                    Owner permission required.
+                </div>
+            `;
+
+        return;
+    }
+
+    try {
+
+        const {
+            data: users,
+            error: usersError
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select(
+                    "id, username, created_at"
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: true
+                    }
+                );
+
+        if (usersError) {
+            throw usersError;
+        }
+
+        const {
+            data: bans,
+            error: bansError
+        } =
+            await supabaseClient
+                .from("user_bans")
+                .select("*");
+
+        if (bansError) {
+            throw bansError;
+        }
+
+        const banMap =
+            new Map();
+
+        (bans || [])
+            .forEach(
+                ban => {
+
+                    if (
+                        !ban.expires_at ||
+                        new Date(
+                            ban.expires_at
+                        ) > new Date()
+                    ) {
+
+                        banMap.set(
+                            ban.user_id,
+                            ban
+                        );
+                    }
+                }
+            );
+
+        container.innerHTML =
+            (users || [])
+                .map(
+                    user => {
+
+                        const ban =
+                            banMap.get(
+                                user.id
+                            );
+
+                        const isSelf =
+                            currentUser &&
+                            currentUser.id ===
+                            user.id;
+
+                        return `
+
+                            <div
+                                class="
+                                    owner-user
+                                    ${
+                                        ban
+                                            ? "banned-user"
+                                            : ""
+                                    }
+                                "
+                            >
+
+                                <div
+                                    class="owner-actions"
+                                >
+
+                                    ${
+                                        ban
+                                            ?
+                                            `
+                                                <button
+                                                    onclick="
+                                                        unbanUser(
+                                                            '${user.id}'
+                                                        )
+                                                    "
+                                                >
+                                                    Unban
+                                                </button>
+                                            `
+                                            :
+                                            (
+                                                isSelf
+                                                    ? ""
+                                                    :
+                                                    `
+                                                        <button
+                                                            class="danger"
+                                                            onclick="
+                                                                openBanForm(
+                                                                    '${user.id}',
+                                                                    '${escapeHTML(
+                                                                        user.username
+                                                                    )}'
+                                                                )
+                                                            "
+                                                        >
+                                                            Ban
+                                                        </button>
+                                                    `
+                                            )
+                                    }
+
+                                </div>
+
+                                <b>
+                                    ${escapeHTML(
+                                        user.username
+                                    )}
+                                </b>
+
+                                <br>
+
+                                <span class="small">
+
+                                    Joined:
+                                    ${escapeHTML(
+                                        formatDate(
+                                            user.created_at
+                                        )
+                                    )}
+
+                                </span>
+
+                                ${
+                                    ban
+                                        ?
+                                        `
+                                            <br><br>
+
+                                            <span class="small red">
+
+                                                <b>
+                                                    BANNED
+                                                </b>
+
+                                                ${
+                                                    ban.expires_at
+                                                        ?
+                                                        `
+                                                            until
+                                                            ${escapeHTML(
+                                                                formatDate(
+                                                                    ban.expires_at
+                                                                )
+                                                            )}
+                                                        `
+                                                        :
+                                                        "(permanent)"
+                                                }
+
+                                                <br>
+
+                                                Reason:
+                                                ${escapeHTML(
+                                                    ban.reason ||
+                                                    "None"
+                                                )}
+
+                                            </span>
+                                        `
+                                        :
+                                        ""
+                                }
+
+                            </div>
+                        `;
+                    }
+                )
+                .join("");
+
+        if (
+            !users ||
+            users.length === 0
+        ) {
+
+            container.innerHTML =
+                `
+                    <div class="notice">
+                        No users found.
+                    </div>
+                `;
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Owner user loading error:",
+            error
+        );
+
+        container.innerHTML =
+            `
+                <div class="error">
+                    ${escapeHTML(
+                        error.message
+                    )}
+                </div>
+            `;
+    }
+}
+
+function openBanForm(
+    userId,
+    username
+) {
+
+    const reason =
+        prompt(
+            "Reason for banning " +
+            username +
+            ":"
+        );
+
+    if (
+        reason === null
+    ) {
+        return;
+    }
+
+    const cleanReason =
+        reason.trim();
+
+    if (!cleanReason) {
+
+        alert(
+            "A reason is required."
+        );
+
+        return;
+    }
+
+    const duration =
+        prompt(
+            "Duration in hours:\n\n" +
+            "1 = 1 hour\n" +
+            "6 = 6 hours\n" +
+            "24 = 1 day\n" +
+            "72 = 3 days\n" +
+            "168 = 7 days\n" +
+            "720 = 30 days\n" +
+            "0 = permanent"
+        );
+
+    if (
+        duration === null
+    ) {
+        return;
+    }
+
+    const hours =
+        Number(
+            duration
+        );
+
+    if (
+        !Number.isFinite(hours) ||
+        hours < 0
+    ) {
+
+        alert(
+            "Invalid duration."
+        );
+
+        return;
+    }
+
+    banUser(
+        userId,
+        cleanReason,
+        hours === 0
+            ? null
+            : hours
+    );
+}
+
+async function banUser(
+    userId,
+    reason,
+    durationHours
+) {
+
+    if (!isOwner) {
+
+        showMessage(
+            "Owner permission required.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (
+        currentUser &&
+        currentUser.id === userId
+    ) {
+
+        showMessage(
+            "You cannot ban yourself.",
+            "error"
+        );
+
+        return;
+    }
+
+    try {
+
+        let expiresAt = null;
+
+        if (
+            durationHours !== null
+        ) {
+
+            expiresAt =
+                new Date(
+                    Date.now() +
+                    durationHours *
+                    60 *
+                    60 *
+                    1000
+                ).toISOString();
+        }
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("user_bans")
+                .insert({
+                    user_id:
+                        userId,
+                    banned_by:
+                        currentUser.id,
+                    reason:
+                        reason,
+                    expires_at:
+                        expiresAt
+                });
+
+        if (error) {
+            throw error;
+        }
+
+        const {
+            error: logError
+        } =
+            await supabaseClient
+                .from("moderation_log")
+                .insert({
+                    action:
+                        "ban",
+                    moderator_id:
+                        currentUser.id,
+                    target_user_id:
+                        userId,
+                    reason:
+                        reason
+                });
+
+        if (logError) {
+            throw logError;
+        }
+
+        showMessage(
+            "User has been banned."
+        );
+
+        await loadOwnerUsers();
+        await loadModerationLog();
+
+    } catch (error) {
+
+        console.error(
+            "Ban error:",
+            error
+        );
+
+        showMessage(
+            "Could not ban user: " +
+            error.message,
+            "error"
+        );
+    }
+}
+
+async function unbanUser(
+    userId
+) {
+
+    if (!isOwner) {
+        return;
+    }
+
+    if (
+        !confirm(
+            "Unban this user?"
+        )
+    ) {
+        return;
+    }
+
+    try {
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("user_bans")
+                .delete()
+                .eq(
+                    "user_id",
+                    userId
+                );
+
+        if (error) {
+            throw error;
+        }
+
+        const {
+            error: logError
+        } =
+            await supabaseClient
+                .from("moderation_log")
+                .insert({
+                    action:
+                        "unban",
+                    moderator_id:
+                        currentUser.id,
+                    target_user_id:
+                        userId,
+                    reason:
+                        "Manual unban"
+                });
+
+        if (logError) {
+            throw logError;
+        }
+
+        showMessage(
+            "User has been unbanned."
+        );
+
+        await loadOwnerUsers();
+        await loadModerationLog();
+
+    } catch (error) {
+
+        console.error(
+            "Unban error:",
+            error
+        );
+
+        showMessage(
+            "Could not unban user: " +
+            error.message,
+            "error"
+        );
+    }
+}
+
+async function loadModerationLog() {
+
+    const container =
+        document.getElementById(
+            "moderationLog"
+        );
+
+    if (!isOwner) {
+        return;
+    }
+
+    try {
+
+        const {
+            data: logs,
+            error
+        } =
+            await supabaseClient
+                .from("moderation_log")
+                .select("*")
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                )
+                .limit(100);
+
+        if (error) {
+            throw error;
+        }
+
+        if (
+            !logs ||
+            logs.length === 0
+        ) {
+
+            container.innerHTML =
+                "No moderation actions yet.";
+
+            return;
+        }
+
+        container.innerHTML =
+            logs
+                .map(
+                    log => `
+
+                        <div class="log-entry">
+
+                            <b>
+                                ${escapeHTML(
+                                    log.action
+                                )}
+                            </b>
+
+                            <br>
+
+                            <span class="small">
+
+                                Target:
+                                ${escapeHTML(
+                                    log.target_user_id ||
+                                    "Unknown"
+                                )}
+
+                                <br>
+
+                                ${escapeHTML(
+                                    formatDate(
+                                        log.created_at
+                                    )
+                                )}
+
+                                <br>
+
+                                Reason:
+                                ${escapeHTML(
+                                    log.reason ||
+                                    "None"
+                                )}
+
+                            </span>
+
+                        </div>
+                    `
+                )
+                .join("");
+
+    } catch (error) {
+
+        console.error(
+            "Moderation log error:",
+            error
+        );
+
+        container.innerHTML =
+            `
+                <div class="error">
+                    ${escapeHTML(
+                        error.message
+                    )}
+                </div>
+            `;
+    }
+}
+
+
+/* =========================================================
+   ABOUT
+   ========================================================= */
+
+function showAbout() {
+
+    document.getElementById(
+        "app"
+    ).innerHTML = `
+
+        <div class="section">
+
+            <div class="section-title">
+                ABOUT THE RED ARCHIVE
+            </div>
+
+            <div class="section-body">
+
+                <h2 class="welcome-title">
+                    The Red Archive
+                </h2>
+
+                <p>
+                    The Red Archive is a small
+                    independent community archive.
+                </p>
+
+                <p>
+                    Members can submit information,
+                    stories, discoveries, images
+                    and files.
+                </p>
+
+                <p>
+                    The site is moderated by
+                    its owner.
+                </p>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   ROUTING
+   ========================================================= */
+
+function getRoute() {
+
+    const hash =
+        location.hash.substring(1);
+
+    if (!hash) {
+
+        return {
+            type: "home"
+        };
+    }
+
+    if (
+        hash.startsWith("post-")
+    ) {
+
+        const id =
+            hash.substring(5);
+
+        if (
+            /^\d+$/.test(id)
+        ) {
+
+            return {
+                type:
+                    "single-post",
+                id:
+                    Number(id)
+            };
+        }
+    }
+
+    return {
+        type:
+            hash.toLowerCase()
+    };
+}
+
+function navigate(
+    route
+) {
+
+    location.hash =
+        route;
+}
+
+async function renderRoute() {
+
+    await updateAuthState();
+
+    if (currentUser) {
+
+        const allowed =
+            await checkModerationStatus();
+
+        if (!allowed) {
+            return;
+        }
+    }
+
+    const route =
+        getRoute();
+
+    if (
+        route.type ===
+        "single-post"
+    ) {
+
+        await showSinglePost(
+            route.id
+        );
+
+        return;
+    }
+
+    switch (
+        route.type
+    ) {
+
+        case "home":
+            await showHome();
+            break;
+
+        case "archive":
+            await showArchive();
+            break;
+
+        case "members":
+            await showMembers();
+            break;
+
+        case "about":
+            showAbout();
+            break;
+
+        case "register":
+            showRegister();
+            break;
+
+        case "login":
+            showLogin();
+            break;
+
+        case "post":
+            showPostPage();
+            break;
+
+        case "owner":
+            await showOwnerPanel();
+            break;
+
+        default:
+
+            location.hash =
+                "home";
+
+            break;
+    }
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+document
+    .getElementById(
+        "logoutLink"
+    )
+    .addEventListener(
+        "click",
+        async event => {
+
+            event.preventDefault();
+
+            await logout();
+        }
+    );
+
+
+/* =========================================================
+   AUTH EVENTS
+   ========================================================= */
+
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        async (
+            event,
+            session
+        ) => {
+
+            currentUser =
+                session?.user ||
+                null;
+
+            await updateAuthState();
+        }
+    );
+
+
+/* =========================================================
+   HASH CHANGES
+   ========================================================= */
+
+window.addEventListener(
+    "hashchange",
+    async () => {
+
+        await renderRoute();
+    }
+);
+
+
+/* =========================================================
+   VISITOR COUNTER
+   ========================================================= */
+
+function updateCounter() {
+
+    let count =
+        localStorage.getItem(
+            "redArchiveCounter"
+        );
+
+    if (!count) {
+
+        count =
+            String(
+                Math.floor(
+                    Math.random() *
+                    90000
+                ) +
+                10000
+            );
+
+    } else {
+
+        count =
+            String(
+                Number(count) +
+                1
+            );
+    }
+
+    localStorage.setItem(
+        "redArchiveCounter",
+        count
+    );
+
+    document.getElementById(
+        "visitorCounter"
+    ).textContent =
+        count.padStart(
+            6,
+            "0"
+        );
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+async function startApp() {
+
+    updateCounter();
+
+    await updateAuthState();
+
+    if (currentUser) {
+
+        const allowed =
+            await checkModerationStatus();
+
+        if (!allowed) {
+            return;
+        }
+    }
+
+    await renderRoute();
+}
+
+startApp();
+
+</script>
+
+</body>
+</html>
